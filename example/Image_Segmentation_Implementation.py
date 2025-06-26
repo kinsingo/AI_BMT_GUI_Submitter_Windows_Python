@@ -4,7 +4,7 @@ import cv2
 import onnxruntime as ort
 from GUI_Mananger import ExecuteGUI, bmt, current_dir
 
-# Define the interface class for Classification using ONNX
+# Define the interface class for Segmentation using ONNX
 class SubmitterImplementation(bmt.AI_BMT_Interface):
     def __init__(self):
         super().__init__()
@@ -30,7 +30,7 @@ class SubmitterImplementation(bmt.AI_BMT_Interface):
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model not found: {model_path}")
 
-        self.session = ort.InferenceSession(model_path, providers=['CPUExecutionProvider'])
+        self.session = ort.InferenceSession(model_path, providers=["CPUExecutionProvider"])
         self.input_name = self.session.get_inputs()[0].name
         self.output_name = self.session.get_outputs()[0].name
         return True
@@ -39,32 +39,42 @@ class SubmitterImplementation(bmt.AI_BMT_Interface):
         image = cv2.imread(image_path)
         if image is None:
             raise FileNotFoundError(f"Image not found: {image_path}")
-        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = cv2.resize(image, (224, 224))
+        
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)  # BGR → RGB
+
+        # flatten (HWC → 1D)
+        image = image.reshape(-1)
+
+        # convert to float and normalize
         image = image.astype(np.float32) / 255.0
 
-        # Normalize
-        mean = np.array([0.485, 0.456, 0.406], dtype=np.float32)
-        std = np.array([0.229, 0.224, 0.225], dtype=np.float32)
-        image = (image - mean) / std
+        # mean/std normalize per channel
+        means = np.array([0.485, 0.456, 0.406], dtype=np.float32)
+        stds = np.array([0.229, 0.224, 0.225], dtype=np.float32)
 
-        # Transpose to (C, H, W)
-        image = np.transpose(image, (2, 0, 1)).astype(np.float32)
-        return image.flatten().tolist()
+        # Prepare CHW by selecting each channel separately
+        chw = []
+        for ch in range(3):
+            channel_data = image[ch::3]
+            normalized = (channel_data - means[ch]) / stds[ch]
+            chw.append(normalized)
+        
+        # flatten CHW
+        return np.concatenate(chw).tolist()
 
     def runInference(self, preprocessed_data_list):
         results = []
         for i, preprocessed_data in enumerate(preprocessed_data_list):
-            input_tensor = np.array(preprocessed_data, dtype=np.float32).reshape(1, 3, 224, 224)
+            input_tensor = np.array(preprocessed_data, dtype=np.float32).reshape(1, 3, 520, 520)
             outputs = self.session.run([self.output_name], {self.input_name: input_tensor})
-            output_tensor = outputs[0]  # shape: (1, 1000)
+            output_tensor = outputs[0]  # shape: (1, 21, 520, 520)
             result = bmt.BMTResult()
-            result.classProbabilities = output_tensor.flatten().tolist()
+            result.segmentationResult = output_tensor.flatten().tolist()
             results.append(result)
         return results
-
+       
 if __name__ == "__main__":
     interface = SubmitterImplementation()
-    model_path = current_dir / "Model" / "Classification" / "mobilenet_v2_opset10.onnx"
+    model_path = current_dir / "Model" / "Segmentation" / "deeplabv3_mobilenet_v3_large_opset12.onnx"
     model_path = model_path.as_posix()
     ExecuteGUI(interface, model_path)
