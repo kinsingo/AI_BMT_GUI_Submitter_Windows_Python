@@ -16,14 +16,14 @@
 This version of the AI-BMT Platform allows you to implement your submitter in **Python** by inheriting the provided abstract interface `bmt.AI_BMT_Interface`.  
 Once implemented, your model and preprocessing pipeline can be evaluated through the unified GUI interface, just like C++-based submitters.
 
-You can directly modify the class **`SubmitterImplementation(bmt.AI_BMT_Interface)`** in `main.py`.  
+You can directly modify the **`class SubmitterImplementation(bmt.AI_BMT_Interface)`** in `main.py`.  
 We also provide ONNX Runtime-based example scripts for **Classification**, **Object Detection**, and **Semantic Segmentation** in the `example/` folder.
 
 ---
 
 ## 3. Submitter Development Guide
 
-### ✅ Required Interface
+### Required Interface
 submitter **must** subclass `bmt.AI_BMT_Interface` and implement the following methods:
 ```python
 class MySubmitter(bmt.AI_BMT_Interface):
@@ -38,8 +38,9 @@ class MySubmitter(bmt.AI_BMT_Interface):
     def runInference(self, data: List[VariantType]) -> List[BMTResult]:
         # Perform inference and return results
         ...
+```
 
-### ✅ Optional Interface
+### Optional Interface
 
 submitter can optionally provide hardware/system metadata using:
 ```python
@@ -57,4 +58,4 @@ class MySubmitter(bmt.AI_BMT_Interface):
         data.benchmark_model = "ResNet-50"
         data.operating_system = "Windows 10"
         return data
-
+```
