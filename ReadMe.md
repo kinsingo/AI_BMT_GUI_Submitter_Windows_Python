@@ -26,7 +26,7 @@ We also provide ONNX Runtime-based example scripts for **Classification**, **Obj
 ### Required Interface
 submitter **must** subclass `bmt.AI_BMT_Interface` and implement the following methods:
 ```python
-class MySubmitter(bmt.AI_BMT_Interface):
+class SubmitterImplementation(bmt.AI_BMT_Interface):
     def Initialize(self, model_path: str) -> None:
         # Load and initialize your model here
         ...
@@ -44,7 +44,7 @@ class MySubmitter(bmt.AI_BMT_Interface):
 
 submitter can optionally provide hardware/system metadata using:
 ```python
-class MySubmitter(bmt.AI_BMT_Interface):
+class SubmitterImplementation(bmt.AI_BMT_Interface):
     def getOptionalData(self) -> Optional_Data:
         data = Optional_Data()
         data.cpu_type = "Intel i7-9750HF"
