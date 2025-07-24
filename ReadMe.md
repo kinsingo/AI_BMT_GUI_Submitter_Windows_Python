@@ -1,5 +1,5 @@
 # AI-BMT Platform — Python Submitter Interface
-**Last Updated:** 2025-07-16 — the VariantType can be any python object
+**Last Updated:** 2025-07-24 — the python object memory leak issue solved.
 
 ---
 
