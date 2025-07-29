@@ -1,5 +1,5 @@
 # AI-BMT Platform — Python Submitter Interface
-**Last Updated:** 2025-07-24 — the python object memory leak issue solved.
+**Last Updated:** 2025-07-29 — Ignoring the python wrapper overhead when measure timming performance
 
 ---
 
