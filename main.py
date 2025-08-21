@@ -2,7 +2,7 @@ import os
 import numpy as np
 import cv2
 import onnxruntime as ort
-#import ModelLoadingHelper #this may necessary for loading pth models
+#from ModelLoadingHelper import DeeplabWithUpsample #this may necessary for loading pth models
 from GUI_Mananger import ExecuteGUI, bmt
 
 # Define the interface class for Segmentation using ONNX
