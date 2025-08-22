@@ -2,10 +2,10 @@ import os
 import numpy as np
 import cv2
 import onnxruntime as ort
-from GUI_Mananger import ExecuteGUI, bmt, current_dir
+from GUI_Mananger import bmt
 
 # Define the interface class for Classification using ONNX
-class SubmitterImplementation(bmt.AI_BMT_Interface):
+class SubmitterClassificationImplementation(bmt.AI_BMT_Interface):
     def __init__(self):
         super().__init__()
         self.session = None
@@ -26,7 +26,10 @@ class SubmitterImplementation(bmt.AI_BMT_Interface):
         optional.operating_system = ""
         return optional
 
-    def Initialize(self, model_path: str):
+    def getInterfaceType(self):
+        return bmt.InterfaceType.ImageClassification
+
+    def initialize(self, model_path: str):
         if not os.path.exists(model_path):
             raise FileNotFoundError(f"Model not found: {model_path}")
 
@@ -35,7 +38,7 @@ class SubmitterImplementation(bmt.AI_BMT_Interface):
         self.output_name = self.session.get_outputs()[0].name
         return True
 
-    def convertToPreprocessedDataForInference(self, image_path: str):
+    def preprocessVisionData(self, image_path: str):
         image = cv2.imread(image_path)
         if image is None:
             raise FileNotFoundError(f"Image not found: {image_path}")
@@ -52,7 +55,7 @@ class SubmitterImplementation(bmt.AI_BMT_Interface):
         image = np.transpose(image, (2, 0, 1)).astype(np.float32)
         return np.array(image, dtype=np.float32).reshape(1, 3, 224, 224)
 
-    def runInference(self, preprocessed_data_list):
+    def inferVision(self, preprocessed_data_list):
         """
         Perform inference and return a list of BMTResult.
         
@@ -71,11 +74,7 @@ class SubmitterImplementation(bmt.AI_BMT_Interface):
         for _, preprocessed_data in enumerate(preprocessed_data_list):
             outputs = self.session.run([self.output_name], {self.input_name: preprocessed_data})
             output_tensor = outputs[0]  # shape: (1, 1000)
-            result = bmt.BMTResult()
+            result = bmt.BMTVisionResult()
             result.classProbabilities = output_tensor.flatten()
             results.append(result)
         return results
-
-if __name__ == "__main__":
-    interface = SubmitterImplementation()
-    ExecuteGUI(interface)

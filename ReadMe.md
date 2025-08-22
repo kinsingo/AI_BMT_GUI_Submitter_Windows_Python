@@ -27,7 +27,7 @@ We also provide ONNX Runtime-based example scripts for **Classification**, **Obj
 submitter **must** subclass `bmt.AI_BMT_Interface` and implement the following methods:
 ```python
 class SubmitterImplementation(bmt.AI_BMT_Interface):
-    def Initialize(self, model_path: str) -> None:
+    def initialize(self, model_path: str) -> None:
         # Load and initialize your model here
         ...
 
