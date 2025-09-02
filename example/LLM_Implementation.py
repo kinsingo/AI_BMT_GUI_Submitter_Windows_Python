@@ -4,7 +4,7 @@ import onnxruntime as ort
 from GUI_Mananger import bmt
 
 # LLM용 Submitter (ONNX Runtime)
-class SubmitterLLMImplementation(bmt.AI_BMT_Interface):
+class LLM_Implementation(bmt.AI_BMT_Interface):
     def __init__(self):
         super().__init__()
         self.session: ort.InferenceSession | None = None

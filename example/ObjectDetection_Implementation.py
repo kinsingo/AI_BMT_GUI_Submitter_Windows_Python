@@ -5,7 +5,7 @@ import onnxruntime as ort
 from GUI_Mananger import bmt
 
 # Define the interface class for ObjectDetection using ONNX
-class SubmitterObjectDetectionImplementation(bmt.AI_BMT_Interface):
+class ObjectDetection_Implementation(bmt.AI_BMT_Interface):
     def __init__(self):
         super().__init__()
         self.session = None
@@ -73,3 +73,8 @@ class SubmitterObjectDetectionImplementation(bmt.AI_BMT_Interface):
             result.objectDetectionResult = output_tensor.flatten()
             results.append(result)
         return results
+    
+    
+class ObjectDetection_CustomDataset_Implementation(ObjectDetection_Implementation):
+    def getInterfaceType(self):
+        return bmt.InterfaceType.ObjectDetection_CustomDataset

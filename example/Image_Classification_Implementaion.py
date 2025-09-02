@@ -5,7 +5,7 @@ import onnxruntime as ort
 from GUI_Mananger import bmt
 
 # Define the interface class for Classification using ONNX
-class SubmitterClassificationImplementation(bmt.AI_BMT_Interface):
+class Classification_Implementation(bmt.AI_BMT_Interface):
     def __init__(self):
         super().__init__()
         self.session = None
@@ -43,7 +43,6 @@ class SubmitterClassificationImplementation(bmt.AI_BMT_Interface):
         if image is None:
             raise FileNotFoundError(f"Image not found: {image_path}")
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        image = cv2.resize(image, (224, 224))
         image = image.astype(np.float32) / 255.0
 
         # Normalize
@@ -78,3 +77,34 @@ class SubmitterClassificationImplementation(bmt.AI_BMT_Interface):
             result.classProbabilities = output_tensor.flatten()
             results.append(result)
         return results
+    
+    
+class Classification_CustomDataset_Implementation(Classification_Implementation):
+    def getInterfaceType(self):
+        return bmt.InterfaceType.ImageClassification_CustomDataset
+
+    def getResizedAndCenterCroppedImage(self, image):
+        # Resize to 232x232 using bilinear interpolation
+        image = cv2.resize(image, (232, 232), interpolation=cv2.INTER_LINEAR)
+        # Center crop to 224x224
+        h, w, _ = image.shape
+        top = (h - 224) // 2
+        left = (w - 224) // 2
+        return image[top:top+224, left:left+224]
+        
+    def preprocessVisionData(self, image_path: str):
+        image = cv2.imread(image_path)
+        if image is None:
+            raise FileNotFoundError(f"Image not found: {image_path}")
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        image = self.getResizedAndCenterCroppedImage(image)
+        image = image.astype(np.float32) / 255.0
+
+        # Normalize
+        mean = np.array([0.485, 0.456, 0.406], dtype=np.float32)
+        std = np.array([0.229, 0.224, 0.225], dtype=np.float32)
+        image = (image - mean) / std
+
+        # Transpose to (C, H, W)
+        image = np.transpose(image, (2, 0, 1)).astype(np.float32)
+        return np.array(image, dtype=np.float32).reshape(1, 3, 224, 224)

@@ -5,7 +5,7 @@ import onnxruntime as ort
 from GUI_Mananger import bmt
 
 # Define the interface class for Segmentation using ONNX
-class SubmitterSegmentationImplementation(bmt.AI_BMT_Interface):
+class Segmentation_Implementation(bmt.AI_BMT_Interface):
     def __init__(self):
         super().__init__()
         self.session = None
@@ -92,3 +92,7 @@ class SubmitterSegmentationImplementation(bmt.AI_BMT_Interface):
             result.segmentationResult = output_tensor.flatten()
             results.append(result)
         return results
+    
+class Segmentation_CustomDataset_Implementation(Segmentation_Implementation):
+    def getInterfaceType(self):
+        return bmt.InterfaceType.SemanticSegmentation_CustomDataset

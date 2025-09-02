@@ -1,5 +1,5 @@
-# AI-BMT Platform — Python Submitter Interface
-**Last Updated:** 2025-08-18
+# AI-BMT Platform — Python Submitter Interface (Added LLM Tasks, Multi-Domain Tasks, and Custom Dataset Evaluation Modes)
+**Last Updated:** 2025-09-03 
 
 ---
 
@@ -30,6 +30,9 @@ class SubmitterImplementation(bmt.AI_BMT_Interface):
     def initialize(self, model_path: str) -> None:
         # Load and initialize your model here
         ...
+
+    def getInterfaceType(self) -> InterfaceType:
+        # return the implemented interface task type. 
 
     def convertToPreprocessedDataForInference(self, image_path: str) -> VariantType:
         # Perform image loading and preprocessing here
