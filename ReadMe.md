@@ -12,12 +12,8 @@
 ---
 
 ## 2. Project Description
-
-This version of the AI-BMT Platform allows you to implement your submitter in **Python** by inheriting the provided abstract interface `bmt.AI_BMT_Interface`.  
-Once implemented, your model and preprocessing pipeline can be evaluated through the unified GUI interface, just like C++-based submitters.
-
-You can directly modify the **`class SubmitterImplementation(bmt.AI_BMT_Interface)`** in `main.py`.  
-We also provide ONNX Runtime-based example scripts for **Classification**, **Object Detection**, and **Semantic Segmentation** in the `example/` folder.
+1. Implement AI_BMT_Interface to operate with the intended AI Processing Unit (e.g., CPU, GPU, NPU).
+2. Various task example codes are provided. Use these example codes as a reference to implement the interface for the AI Processing Unit.
 
 ---
 
