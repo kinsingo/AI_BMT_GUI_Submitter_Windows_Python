@@ -25,18 +25,16 @@ submitter **must** subclass `bmt.AI_BMT_Interface` and implement the following m
 class SubmitterImplementation(bmt.AI_BMT_Interface):
     def initialize(self, model_path: str) -> None:
         # Load and initialize your model here
-        ...
 
     def getInterfaceType(self) -> InterfaceType:
         # return the implemented interface task type. 
 
     def convertToPreprocessedDataForInference(self, image_path: str) -> VariantType:
         # Perform image loading and preprocessing here
-        ...
 
     def runInference(self, data: List[VariantType]) -> List[BMTResult]:
         # Perform inference and return results
-        ...
+        
 ```
 
 ### Optional Interface
