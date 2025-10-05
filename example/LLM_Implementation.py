@@ -28,7 +28,13 @@ class LLM_Implementation(bmt.AI_BMT_Interface):
         return optional
     
     def getInterfaceType(self):
-        return bmt.InterfaceType.LLM
+        #return bmt.InterfaceType.LLM_GPT2_MMLU
+        return bmt.InterfaceType.LLM_OPT_MMLU
+        #return bmt.InterfaceType.LLM_QWEN_MMLU
+        #return bmt.InterfaceType.LLM_GPT2_Hellaswag  # e.g., GPT2-based model for Hellaswag
+        #return bmt.InterfaceType.LLM_OPT_Hellaswag  # e.g., OPT-based model for Hellaswag
+        #return bmt.InterfaceType.LLM_QWEN_Hellaswag  # e.g., Qwen-based model for Hellaswag
+        #return bmt.InterfaceType.LLM_Bert_GLUE  # e.g., BERT-based model for GLUE tasks
 
     def initialize(self, model_path: str):
         if not os.path.exists(model_path):
@@ -50,29 +56,24 @@ class LLM_Implementation(bmt.AI_BMT_Interface):
         """
         llmData: bmt.LLMPreprocessedInput (fields: input_ids, attention_mask, token_type_ids)
         """
-        # pybind로 바인딩된 구조체이므로 필드에 직접 대입 가능
-        S = len(llmData.input_ids)
+        size = len(llmData.input_ids)
         if self.modelHasAttnMask:
-            if len(llmData.attention_mask) != S:
-                llmData.attention_mask = [1] * S
+            if len(llmData.attention_mask) != size:
+                llmData.attention_mask = [1] * size
         if self.modelHasTokenType:
-            if len(llmData.token_type_ids) != S:
-                llmData.token_type_ids = [0] * S
+            if len(llmData.token_type_ids) != size:
+                llmData.token_type_ids = [0] * size
         return llmData  # VariantType으로 그대로 전달
 
     def inferLLM(self, preprocessed_data_list):
         results: list[bmt.BMTLLMResult] = []
         for preprocessed_data in preprocessed_data_list:
-            S = len(preprocessed_data.input_ids)
-            shape = (1, S)
-
-            # feed 사전 구성 (모델 입력 이름 순회, 필요 없는 입력은 생략)
+            shape = (preprocessed_data.N, preprocessed_data.S)
             feed: dict[str, np.ndarray] = {}
             for nm in self.input_names:
                 if nm == "input_ids":
                     feed[nm] = np.asarray(preprocessed_data.input_ids, dtype=np.int64).reshape(shape)
                 elif nm == "attention_mask" and self.modelHasAttnMask:
-                    # preprocessLLMData에서 보정되었어야 함
                     feed[nm] = np.asarray(preprocessed_data.attention_mask, dtype=np.int64).reshape(shape)
                 elif nm == "token_type_ids" and self.modelHasTokenType:
                     feed[nm] = np.asarray(preprocessed_data.token_type_ids, dtype=np.int64).reshape(shape)

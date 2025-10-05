@@ -1,5 +1,5 @@
-# AI-BMT Platform — Python Submitter Interface (Added LLM Tasks, Multi-Domain Tasks, and Custom Dataset Evaluation Modes)
-**Last Updated:** 2025-09-03 
+# AI-BMT Platform — Python Submitter Interface (Added LLM Tasks(HellaSwag, MMLU))
+**Last Updated:** 2025-10-06
 
 ---
 
