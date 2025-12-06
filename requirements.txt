@@ -1,0 +1,10 @@
+numpy>=1.21
+opencv-python>=4.5
+onnxruntime>=1.16
+
+# For Hugging Face models
+torch>=2.0.0
+transformers>=4.51.0
+
+# if you want to use GPU support, uncomment the following line:
+# onnxruntime-gpu>=1.16
