@@ -25,6 +25,9 @@ class Classification_Implementation(bmt.AI_BMT_Interface):
         optional.benchmark_model = ""
         optional.operating_system = ""
         return optional
+    
+    def getPowerDeviceType(self):
+        return bmt.PowerDeviceType.None_ #None_, NvidiaGPU, JetsonSoC, AppleSoC
 
     def getInterfaceType(self):
         return bmt.InterfaceType.ImageClassification

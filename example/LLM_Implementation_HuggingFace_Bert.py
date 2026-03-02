@@ -32,6 +32,9 @@ class LLM_Implementation_HuggingFace_Bert(bmt.AI_BMT_Interface):
     
     def getInterfaceType(self):
         return bmt.InterfaceType.LLM_Bert_GLUE
+    
+    def getPowerDeviceType(self):
+        return bmt.PowerDeviceType.None_ #None_, NvidiaGPU, JetsonSoC, AppleSoC
 
     def initialize(self, model_path: str):
         try:
